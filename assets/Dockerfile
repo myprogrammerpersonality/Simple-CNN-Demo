@@ -7,9 +7,14 @@ COPY ./ ${LAMBDA_TASK_ROOT}
 # from your project folder.
 RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 
-# Download the model weights directly to a writable directory
+# Set the environment variable for the model weights download directory
 ENV TORCH_HOME=/var/task/torch_cache
+
+# Download the model weights directly to a writable directory
 RUN python3 -c "from torchvision.models.detection import fasterrcnn_mobilenet_v3_large_320_fpn; fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=True)"
+
+# Set proper permissions for the torch_cache directory
+RUN chmod -R 755 $TORCH_HOME
 
 # Set WORKDIR to app
 WORKDIR /var/task/
