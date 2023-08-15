@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from mangum import Mangum
 import torchvision
-from torchvision import models
+from torchvision.models.detection import fasterrcnn_mobilenet_v3_large_320_fpn
 import torch
 from PIL import Image
 import cv2
@@ -15,7 +15,7 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-model = models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
+model = fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=True)
 model.eval()
 
 def predict(img_bytes):

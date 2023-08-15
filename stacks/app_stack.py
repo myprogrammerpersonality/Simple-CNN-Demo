@@ -23,6 +23,8 @@ class AppStack(Stack):
                 "VAR": "TEST",
             },
             timeout=Duration.seconds(30),
+            # Set this to 8GB
+            memory_size=8192,
         )
 
         # Add API Gateway
