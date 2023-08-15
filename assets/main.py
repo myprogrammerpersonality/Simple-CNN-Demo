@@ -10,11 +10,14 @@ from PIL import Image
 import cv2
 import io
 import numpy as np
+import os
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+# Set TORCH_HOME to the same directory as in the Dockerfile
+os.environ["TORCH_HOME"] = "/var/task/torch_cache"
 model = fasterrcnn_mobilenet_v3_large_320_fpn(pretrained=True)
 model.eval()
 
