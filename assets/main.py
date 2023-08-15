@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, File, UploadFile
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from mangum import Mangum
@@ -34,17 +34,25 @@ async def chatbot_page(request: Request):
 
 @app.post("/uploadfile/", response_class=HTMLResponse)
 async def upload_file(request: Request, file: UploadFile = File(...)):
-    img_bytes = await file.read()
-    prediction = predict(img_bytes)
-    img = cv2.imdecode(np.frombuffer(img_bytes, np.uint8), -1)
-    for box, score in zip(prediction[0]['boxes'], prediction[0]['scores']):
-        if score > 0.5:
-            cv2.rectangle(img, (box[0], box[1]), (box[2], box[3]), (255, 0, 0), 2)
-    img_byte_arr = io.BytesIO()
-    img.save(img_byte_arr, format='PNG')
-    img_byte_arr = img_byte_arr.getvalue()
+    try:
+        img_bytes = await file.read()
+        img = cv2.imdecode(np.frombuffer(img_bytes, np.uint8), cv2.IMREAD_COLOR)
+        
+        if img is None:
+            raise HTTPException(status_code=400, detail="Unable to decode image")
 
-    return templates.TemplateResponse("base.html", {"request": request, "image": img_byte_arr})
+        prediction = predict(img)
+        
+        for box, score in zip(prediction[0]['boxes'], prediction[0]['scores']):
+            if score > 0.5:
+                cv2.rectangle(img, (int(box[0]), int(box[1])), (int(box[2]), int(box[3])), (255, 0, 0), 2)
+
+        _, img_byte_arr = cv2.imencode('.png', img)
+        
+        return templates.TemplateResponse("base.html", {"request": request, "image": img_byte_arr.tobytes()})
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.get("/ping")
 def read_root():
