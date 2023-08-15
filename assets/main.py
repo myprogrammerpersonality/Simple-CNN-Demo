@@ -1,5 +1,5 @@
-from fastapi import FastAPI, Request, File, UploadFile
-from fastapi.responses import HTMLResponse, HTTPException
+from fastapi import FastAPI, Request, File, UploadFile, HTTPException
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from mangum import Mangum
