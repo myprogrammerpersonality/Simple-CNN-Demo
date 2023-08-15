@@ -1,0 +1,39 @@
+name: "Deploy Bot"
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  cdk:
+    name: "Deploy All Stacks"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      AWS_ACCESS_KEY_ID: "${{ secrets.AWS_ACCESS_KEY_ID_DEV }}"
+      AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}"
+      AWS_DEFAULT_REGION: "eu-west-1"
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Set up Node 19
+        uses: actions/setup-node@v3
+        with:
+          node-version: "19"
+      - name: Install Python dependencies and CDK
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          npm install -g aws-cdk
+      - name: deploy all stacks
+        run: cdk deploy --all --require-approval never
