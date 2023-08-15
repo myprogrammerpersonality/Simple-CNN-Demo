@@ -49,7 +49,7 @@ async def chatbot_page(request: Request):
 async def upload_file(request: Request, file: UploadFile = File(...)):
     try:
         contents = await file.read()
-        nparr = np.fromstring(contents, np.uint8)
+        nparr = np.frombuffer(contents, np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         print(img.shape)
 
