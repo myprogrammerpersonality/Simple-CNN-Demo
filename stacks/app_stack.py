@@ -25,6 +25,8 @@ class AppStack(Stack):
             timeout=Duration.seconds(30),
             # Set this to 8GB
             memory_size=8192,
+            # set architecture to x86_64
+            architecture=lambda_.Architecture.X86_64,
         )
 
         # Add API Gateway
