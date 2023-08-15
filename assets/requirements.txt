@@ -1,5 +1,5 @@
 mangum==0.17.0
-https://download.pytorch.org/whl/cpu/torch-2.0.1%2Bcpu-cp3101cp311-linux_x86_64.whl
+https://download.pytorch.org/whl/cpu/torch-2.0.1%2Bcpu-cp311cp311-linux_x86_64.whl
 https://download.pytorch.org/whl/cpu/torchvision-0.15.2%2Bcpu-cp311-cp311-linux_x86_64.whl
 annotated-types==0.5.0
 anyio==3.7.1
